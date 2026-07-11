@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESI-Connect — Peer Tutoring Platform</title>
+    <title>Student Profile - ESI Connect</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white ">
+
+    <!-- ========================================== -->
+    <!-- HIDDEN CHECKBOXES (peer triggers)         -->
+    <!-- ========================================== -->
+
+    <input type="checkbox" id="requestToggle" class="sr-only peer/request">
+    <input type="checkbox" id="tutorToggle" class="sr-only peer/tutor">
+
+    <!-- ========================================== -->
+    <!-- NAVBAR                                    -->
+    <!-- ========================================== -->
+    <nav class="bg-white shadow-sm border-b border-slate-100">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-blue-600 tracking-tight">ESI-Connect</a>
+            <ul class="hidden md:flex items-center gap-8 text-slate-600 font-medium">
+                <li><a href="#" class="hover:text-blue-600 transition">Home</a></li>
+                <li><a href="#subjects" class="hover:text-blue-600 transition">Subjects</a></li>
+                <li><a href="#how-it-works" class="hover:text-blue-600 transition">How it works</a></li>
+                <li><button id="loginBtn" class="hover:text-blue-600 transition">
+                        Login
+                    </button>
+                </li>
+                <li><button id="registerBtn"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+
+                        Register
+
+                    </button>
+                </li>
+                <li>
+
+                </li>
+            </ul>
+            <button class="md:hidden text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- HERO / INTRODUCTION                       -->
+    <!-- ========================================== -->
+    <section class="bg-white">
+        <div class="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
+                    Get help. Give help. <span class="text-blue-600">Grow together.</span>
+                </h1>
+                <p class="mt-6 text-lg text-slate-600 leading-relaxed">
+                    ESI-Connect is a peer tutoring and support platform built for students.
+                    Need help with a subject? Create a request. Want to help others?
+                    Pick a demand and start tutoring.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <button id="requestBtn"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-2xl hover:bg-white-700 transition">
+                        Get Started
+                    </button>
+                    <button id="tutorBtn"
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-2xl hover:bg-white-700 transition">
+                        Become a Tutor
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 max-w-sm w-full">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                            AI</div>
+                        <div>
+                            <p class="font-semibold text-slate-900 text-sm">Ahmed Ilyes</p>
+                            <p class="text-xs text-slate-500">1st year student</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <p class="text-sm font-medium text-slate-900">Need help with C pointers</p>
+                        <p class="text-xs text-slate-500 mt-1">Subject: C Programming &middot; Difficulty: Intermediate
+                        </p>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <span
+                            class="inline-block rounded-full bg-yellow-100 text-yellow-800 px-3 py-1 text-xs font-medium">PENDING</span>
+                        <span class="text-xs text-slate-400">Posted 10 min ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- HOW IT WORKS                              -->
+    <!-- ========================================== -->
+    <section id="how-it-works" class="bg-slate-50 py-20 border-t border-slate-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">How it works</h2>
+                <p class="mt-4 text-slate-600 max-w-2xl mx-auto">Three simple steps to start learning or helping on
+                    ESI-Connect.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white rounded-2xl shadow p-8 border border-slate-100 text-center hover:shadow-lg transition">
+                    <div
+                        class="w-14 h-14 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-6">
+                        1</div>
+                    <h3 class="text-xl font-semibold text-slate-900">Create a request</h3>
+                    <p class="mt-4 text-slate-600 leading-relaxed">
+                        A student describes their problem, selects the subject and difficulty level, then submits a help
+                        request on the platform.
+                    </p>
+                </div>
+                <div
+                    class="bg-white rounded-2xl shadow p-8 border border-slate-100 text-center hover:shadow-lg transition">
+                    <div
+                        class="w-14 h-14 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-6">
+                        2</div>
+                    <h3 class="text-xl font-semibold text-slate-900">A tutor accepts</h3>
+                    <p class="mt-4 text-slate-600 leading-relaxed">
+                        A tutor browses the open requests and picks one they feel confident about. The request status
+                        changes to accepted.
+                    </p>
+                </div>
+                <div
+                    class="bg-white rounded-2xl shadow p-8 border border-slate-100 text-center hover:shadow-lg transition">
+                    <div
+                        class="w-14 h-14 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-6">
+                        3</div>
+                    <h3 class="text-xl font-semibold text-slate-900">Session completed</h3>
+                    <p class="mt-4 text-slate-600 leading-relaxed">
+                        After the tutoring session, the request is marked as completed. Both students can rate the
+                        experience and continue learning.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SUBJECTS                                  -->
+    <!-- ========================================== -->
+    <section id="subjects" class="bg-white py-20 border-t border-slate-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">Subjects</h2>
+                <p class="mt-4 text-slate-600 max-w-2xl mx-auto">Browse the subjects available for peer tutoring on
+                    ESI-Connect.
+                </p>
+            </div>
+            <div id="subjectsContainer" class="grid md:grid-cols-3 gap-8">
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- LATEST HELP REQUESTS                      -->
+    <!-- ========================================== -->
+    <section class="py-20 bg-slate-50 border-t border-slate-100">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">Latest help requests</h2>
+                <p class="mt-4 text-slate-600 max-w-2xl mx-auto">Recent requests from students looking for peer
+                    support.
+                </p>
+            </div>
+            <div class="flex gap-4 mb-8">
+
+                <select id="subjectFilter" class="border rounded-lg px-4 py-2">
+
+                    <option value="ALL">All Subjects</option>
+                    <option value="C Programming">C Programming</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Databases">Databases</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Physics">Physics</option>
+
+                </select>
+
+                <select id="statusFilter" class="border rounded-lg px-4 py-2">
+
+                    <option value="ALL">All Status</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="ACCEPTED">Accepted</option>
+                    <option value="COMPLETED">Completed</option>
+
+                </select>
+
+
+                <div class="relative w-96 ml-auto">
+
+                    <!-- Icône -->
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6  text-slate-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
+                    </svg>
+
+                    <!-- Champ de recherche -->
+                    <input id="searchInput" type="text" placeholder="Titre ou encadrant..." class="w-full h-14 rounded-full border border-slate-300
+               pl-14 pr-6 text-lg
+               focus:outline-none
+               focus:ring-2
+               focus:ring-blue-500
+               focus:border-blue-500">
+
+                </div>
+            </div>
+            <div id="requestsContainer" class="grid md:grid-cols-3 gap-8 items-start">
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- ========================================== -->
+    <!-- FOOTER                                    -->
+    <!-- ========================================== -->
+    <footer class="bg-slate-900 text-slate-300 py-4">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-2xl font-bold text-white tracking-tight">ESI-Connect</p>
+            <p class="mt-2 text-slate-400">Peer tutoring and support platform for students.</p>
+            <p class="mt-6 text-sm text-slate-500">&copy; 2026 ESI-Connect. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- LOGIN MODAL (with JS)                       -->
+    <!-- ========================================== -->
+
+
+    <div id="loginModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 ">
+
+        <!-- Background -->
+        <div id="loginOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm">
+        </div>
+
+        <!-- Modal -->
+        <div class="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+
+            <!-- Close -->
+            <button id="closeLogin" type="button" class="sticky top-0 float-right z-20
+       text-slate-400 hover:text-slate-700">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+
+                </svg>
+
+            </button>
+
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                Welcome Back
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                Sign in to your ESI-Connect account
+            </p>
+
+            <!-- Email -->
+
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Email
+                </label>
+
+                <input id="loginEmail" type="email" placeholder="yourname@esi.dz"
+                    class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            </div>
+
+            <!-- Password -->
+
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Password
+                </label>
+
+                <div class="relative">
+
+                    <input id="loginPassword" type="password" placeholder="Enter your password"
+                        class="w-full px-5 py-4 pr-14 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                    <button id="toggleLoginPassword" type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-600">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0" />
+
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Remember me -->
+
+            <div class="flex justify-between items-center mb-6">
+
+                <label class="flex items-center gap-2 text-sm text-slate-600">
+
+                    <input id="rememberMe" type="checkbox" class="w-4 h-4 text-blue-600 rounded">
+
+                    Remember me
+
+                </label>
+
+                <a href="#" class="text-sm text-blue-600 hover:underline">
+
+                    Forgot password?
+
+                </a>
+
+            </div>
+
+            <!-- Sign in -->
+
+            <button id="signInBtn" type="button"
+                class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:opacity-90 transition">
+
+                Sign In
+
+            </button>
+
+            <!-- Register link -->
+
+            <p class="mt-6 text-center text-sm text-slate-500">
+
+                Don't have an account?
+
+                <a href="#" id="goToRegister" class="text-blue-600 hover:underline font-medium">
+
+                    Create one
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+    <!-- ========================================== -->
+    <!-- REGISTER MODAL (JavaScript version)        -->
+    <!-- ========================================== -->
+
+    <div id="registerModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+
+        <!-- Background -->
+        <div id="registerOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm">
+        </div>
+
+        <!-- Modal -->
+        <div class="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 max-h-[90vh] overflow-y-auto">
+
+            <!-- Close button -->
+            <button id="closeRegister" type="button"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+
+                </svg>
+
+            </button>
+
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                Create account
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                Join ESI-Connect and start learning or helping
+            </p>
+
+            <!-- Full Name -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Full Name
+                </label>
+
+                <input id="registerFullName" type="text" placeholder="Your full name"
+                    class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Email
+                </label>
+
+                <input id="registerEmail" type="email" placeholder="yourname@esi.dz"
+                    class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Password -->
+            <div class="mb-6">
+
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Password
+                </label>
+
+                <div class="relative">
+
+                    <input id="registerPassword" type="password" placeholder="Enter your password"
+                        class="w-full px-5 py-4 pr-14 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                    <button id="toggleRegisterPassword" type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-600">
+
+                        <!-- Eye -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0" />
+
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-6">
+
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Confirm Password
+                </label>
+
+                <div class="relative">
+
+                    <input id="confirmRegisterPassword" type="password" placeholder="Confirm your password"
+                        class="w-full px-5 py-4 pr-14 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                    <button id="toggleConfirmPassword" type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-600">
+
+                        <!-- Eye -->
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Create Account -->
+            <button id="createAccountBtn" type="button"
+                class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:opacity-90 transition">
+
+                Create Account
+
+            </button>
+
+            <!-- Login link -->
+            <p class="mt-6 text-center text-sm text-slate-500">
+
+                Already have an account?
+
+                <a href="#" id="goToLogin" class="text-blue-600 hover:underline font-medium">
+
+                    Login
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+    <!-- ===========================================-->
+    <!-- Create request(JavaScript Version)        -->
+    <!-- =========================================-->
+
+
+
+    <!-- Request Modal -->
+    <div id="requestModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+
+        <!-- Background -->
+        <div id="requestOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm">
+        </div>
+
+        <!-- Modal -->
+        <div class="relative z-10 bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
+
+            <!-- Close Button -->
+            <button id="closeRequest" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl">
+
+                ✕
+
+            </button>
+
+            <h2 class="text-2xl font-bold mb-2">
+                Create Request
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                Fill in the information below.
+            </p>
+
+            <!-- Title -->
+            <div class="mb-4">
+
+                <label class="block mb-2 font-medium">
+                    Title
+                </label>
+
+                <input id="titleInput" type="text" class="w-full border rounded-lg px-4 py-2"
+                    placeholder="Example: Need help with recursion">
+
+            </div>
+
+            <!-- Subject -->
+            <div class="mb-4">
+
+                <label class="block mb-2 font-medium">
+                    Subject
+                </label>
+
+                <select id="subjectInput" class="w-full border rounded-lg px-4 py-2">
+
+                    <option value="">Choose a subject</option>
+                    <option value="C Programming">C Programming</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Databases">Databases</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Physics">Physics</option>
+
+                </select>
+
+            </div>
+
+            <!-- Difficulty -->
+            <div class="mb-4">
+
+                <label class="block mb-2 font-medium">
+                    Difficulty
+                </label>
+
+                <select id="difficultyInput" class="w-full border rounded-lg px-4 py-2">
+
+                    <option value="">Choose difficulty</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+
+                </select>
+
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+
+                <label class="block mb-2 font-medium">
+                    Description
+                </label>
+
+                <textarea id="descriptionInput" rows="4" class="w-full border rounded-lg px-4 py-2"
+                    placeholder="Describe your problem..."></textarea>
+
+            </div>
+
+            <!-- Error -->
+            <p id="errorMessage" class="hidden text-red-600 mb-4">
+            </p>
+
+            <!-- Submit -->
+            <button id="submitRequestBtn" class="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+
+                Submit Request
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TUTOR MODAL (JavaScript Version)           -->
+    <!-- ========================================== -->
+
+    <div id="tutorModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+
+        <!-- Background -->
+        <div id="tutorOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm">
+        </div>
+
+        <!-- Modal -->
+        <div class="relative z-10 bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-8">
+
+            <!-- Close -->
+            <button id="closeTutor" type="button"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+
+                </svg>
+
+            </button>
+
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                Become a tutor
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                Offer your help and support fellow students
+            </p>
+
+            <!-- Full Name -->
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Full Name
+                </label>
+
+                <input id="tutorFullName" type="text" placeholder="Your full name"
+                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Email
+                </label>
+
+                <input id="tutorEmail" type="email" placeholder="you@example.com"
+                    class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            </div>
+
+            <!-- Subjects -->
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Subjects you can teach
+                </label>
+
+                <div class="grid grid-cols-2 gap-2">
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>C Programming</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>Mathematics</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>Algorithms</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>Databases</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>Web Development</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer">
+                        <input type="checkbox">
+                        <span>Physics</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Motivation -->
+            <div class="mb-6">
+
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Why do you want to help?
+                </label>
+
+                <textarea id="tutorMotivation" rows="4" placeholder="Tell us briefly about your motivation..."
+                    class="w-full px-4 py-2 border border-slate-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+
+            </div>
+
+            <!-- Apply -->
+            <button id="applyTutorBtn" type="button"
+                class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+
+                Apply as Tutor
+
+            </button>
+
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
