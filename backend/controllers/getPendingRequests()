@@ -1,0 +1,9 @@
+function getPendingRequests(req, res) {
+
+    const pendingRequests = requests.filter(request => {
+        return request.status === "PENDING";
+    });
+
+    res.json(pendingRequests);
+
+}
