@@ -1,0 +1,56 @@
+ [
+    {
+        "id": 1,
+        "title": "Need help with C pointers",
+       "description": "I don't understand pointer arithmetic and how pointers relate to arrays.",
+        "subject": "C Programming",
+        "difficulty": "Intermediate",
+        "status": "PENDING",
+        "studentName": "Ayoub Meziani"
+    },
+    {
+        "id": 2,
+        "title": "Linear Algebra Exam",
+        "description": "I need to prepare eigenvalues and diagonalization for next week's exam.",
+        "subject": "Mathematics",
+        "difficulty": "Advanced",
+        "status": "ACCEPTED",
+        "studentName": "Sara Belkacem"
+    },
+    {
+        "id": 3,
+        "title": "Binary Search Trees",
+        "description": "Insertion works but my deletion breaks the tree structure.",
+        "subject": "Algorithms",
+        "difficulty": "Intermediate",
+        "status": "PENDING",
+        "studentName": "Mohamed Ali"
+    },
+    {
+        "id": 4,
+        "title": "SQL Optimization",
+        "description": "I'm confused about the difference between primary keys and foreign keys. How are they used to relate tables in a database?",
+        "subject": "Databases",
+        "difficulty": "Beginner",
+        "status": "COMPLETED",
+        "studentName": "Rami Karim"
+    },
+    {
+        "id": 5,
+        "title": "Flexbox Layout",
+        "description": "My items refuse to center vertically no matter what I try.",
+        "subject": "Web Development",
+        "difficulty": "Beginner",
+        "status": "PENDING",
+        "studentName": "Aya Mecheri"
+    },
+    {
+        "id": 6,
+        "title": "Newton Laws",
+        "description": "Free body diagrams with friction on an inclined plane confuse me.",
+        "subject": "Physics",
+        "difficulty": "Intermediate",
+        "status": "ACCEPTED",
+        "studentName": "Yasmine Hamidi"
+    }
+]
