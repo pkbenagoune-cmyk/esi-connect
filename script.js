@@ -149,6 +149,7 @@ subjects.forEach(subject => {
 
     <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center  ${subject.bgcolor} ${subject.iconcolor} -translate-y-3">
     ${subject.icon}
+    </div>
 </div>
 
 <div class="bg-white rounded-2xl shadow p-6 border border-slate-100 hover:shadow-lg transition">

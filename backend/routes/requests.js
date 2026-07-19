@@ -1,3 +1,4 @@
+const validateRequest = require("../middlewares/validateRequest");
 const express = require("express");
 const router = express.Router();
 
@@ -10,11 +11,11 @@ const {
 } = require("../controllers/requestsController");
 
 router.get("/", getRequests);
-router.post("/", createRequest);
+router.post("/",validateRequest, createRequest);
 router.get("/pending", getPendingRequests);
 
 router.get("/:id", getRequestById);
-router.put("/:id", updateRequest);
+router.put("/:id", validateRequest, updateRequest);
 router.delete("/:id", deleteRequest);
 
 module.exports = router;

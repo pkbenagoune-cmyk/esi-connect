@@ -4,6 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+http-equiv="Content-Security-Policy"
+content="
+default-src 'self';
+connect-src 'self' http://localhost:4000;
+script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+font-src 'self' https://fonts.gstatic.com;
+">
     <title>ESI-Connect — Peer Tutoring Platform</title>
     <title>Student Profile - ESI Connect</title>
 
@@ -192,16 +201,11 @@
             </div>
             <div class="flex gap-4 mb-8">
 
-                <select id="subjectFilter" class="border rounded-lg px-4 py-2">
+             <select id="subjectInput" class="w-full border rounded-lg px-4 py-2">
 
-                    <option value="ALL">All Subjects</option>
-                    <option value="C Programming">C Programming</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Algorithms">Algorithms</option>
-                    <option value="Databases">Databases</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="Physics">Physics</option>
+    <option value="">Loading subjects...</option>
 
+</select>
                 </select>
 
                 <select id="statusFilter" class="border rounded-lg px-4 py-2">
