@@ -6,7 +6,9 @@ const {
     getRequests,
     getPendingRequests,
     getRequestById,
+
     createRequest,
+    updateRequest,
       deleteRequest
 } = require("../controllers/requestsController");
 

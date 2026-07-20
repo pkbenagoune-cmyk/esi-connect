@@ -1,4 +1,9 @@
-const subjects = require("../data/subjects.json");
+const fs = require("fs");
+const path = require("path");
+const subjectsfilePath = path.join(__dirname, "..","data","subjects.json");
+const requestsfilePath = path.join(__dirname, "..","data","requests.json");
+let requests = JSON.parse(fs.readFileSync(requestsfilePath, "utf-8"));
+let subjects = JSON.parse(fs.readFileSync(subjectsfilePath, "utf-8"));
 
 function validateRequest(req, res, next) {
 
