@@ -1,227 +1,357 @@
-const fs = require("fs");
-const path = require("path");
-const subjectsfilePath = path.join(__dirname, "..","data","subjects.json");
-const requestsfilePath = path.join(__dirname, "..","data","requests.json");
-let requests = JSON.parse(fs.readFileSync(requestsfilePath, "utf-8"));
-let subjects = JSON.parse(fs.readFileSync(subjectsfilePath, "utf-8"));
+const pool = require("../config/db");
+const getAllRequests = async (req, res) => {
+    try {
 
-function getRequests(req, res) {
+        const { subjectId, status } = req.query;
 
-    const status = req.query.status;
-    const subjectId = req.query.subjectId;
+        let query = `
+            SELECT
+                tr.id,
+                tr.title,
+                tr.description,
+                tr.difficulty,
+                tr.status,
+                tr.created_at,
 
-    let filteredRequests = requests;
+                s.name AS subject_name,
 
-    if (status) {
-        filteredRequests = filteredRequests.filter(request => {
-            return request.status === status;
+                student.first_name AS student_first_name,
+                student.last_name AS student_last_name,
+
+                tutor.first_name AS tutor_first_name,
+                tutor.last_name AS tutor_last_name
+
+            FROM tutoring_requests tr
+
+            JOIN subjects s
+                ON tr.subject_id = s.id
+
+            JOIN users student
+                ON tr.student_id = student.id
+
+            LEFT JOIN users tutor
+                ON tr.tutor_id = tutor.id
+        `;
+
+        const values = [];
+        const conditions = [];
+
+        if (subjectId) {
+            values.push(subjectId);
+            conditions.push(`tr.subject_id = $${values.length}`);
+        }
+
+        if (status) {
+            values.push(status);
+            conditions.push(`tr.status = $${values.length}`);
+        }
+
+        if (conditions.length > 0) {
+            query += ` WHERE ${conditions.join(" AND ")}`;
+        }
+
+        query += ` ORDER BY tr.created_at DESC`;
+
+        const result = await pool.query(query, values);
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Erreur serveur."
         });
-    }
-
-    if (subjectId) {
-        filteredRequests = filteredRequests.filter(request => {
-            return request.subjectId === Number(subjectId);
-        });
-    }
-
-    res.json(filteredRequests);
-}
-
-function getPendingRequests(req, res) {
-
-    const pendingRequests = requests.filter(request => {
-        return request.status === "PENDING";
-    });
-
-    res.json(pendingRequests);
-}
-function getRequestById(req, res) {
-
-    const id = Number(req.params.id);
-
-    const request = requests.find(currentRequest => {
-        return currentRequest.id === id;
-    });
-
-    if (!request) {
-
-        return res.status(404).json({
-            message: "Demande introuvable."
-        });
 
     }
+};
 
-    res.json(request);
-
-}
-function createRequest(req, res) {
-
-    // Validate title
-    if (!req.body.title) {
-        return res.status(400).json({
-            message: "Title is required."
-        });
-    }
-
-    // Validate description
-    if (!req.body.description) {
-        return res.status(400).json({
-            message: "Description is required."
-        });
-    }
-
-    // Validate subject
-    const subject = subjects.find(subject => {
-        return subject.id === Number(req.body.subjectId);
-    });
-
-    if (!subject) {
-        return res.status(400).json({
-            message: "Subject does not exist."
-        });
-    }
-
-    // Validate difficulty
-    if (!req.body.difficulty) {
-        return res.status(400).json({
-            message: "Difficulty is required."
-        });
-    }
-
-    // Generate ID
-    const maxId = requests.reduce((max, request) => {
-        return request.id > max ? request.id : max;
-    }, 0);
-
-    // Create request
-    const newRequest = {
-        id: maxId + 1,
-        title: req.body.title,
-        subjectId: Number(req.body.subjectId),
-        difficulty: req.body.difficulty,
-        description: req.body.description,
-         studentName: req.body.studentName,
-
-        // Business rule
-        status: "PENDING"
-    };
-
-    requests.push(newRequest);
-
-    fs.writeFileSync(
-        "./data/requests.json",
-        JSON.stringify(requests, null, 2)
-    );
-
-    res.status(201).json(newRequest);
-}
-function updateRequest(req, res) {
-
-    // 1. Find the request
-    const request = requests.find(request => {
-        return request.id === Number(req.params.id);
-    });
-
-    // 2. Request not found
-    if (!request) {
-        return res.status(404).json({
-            message: "Request not found."
-        });
-    }
-
-    // 3. Validate title
-    if (!req.body.title) {
-        return res.status(400).json({
-            message: "Title is required."
-        });
-    }
-
-    // 4. Validate description
-    if (!req.body.description) {
-        return res.status(400).json({
-            message: "Description is required."
-        });
-    }
-
-    // 5. Validate difficulty
-    if (!req.body.difficulty) {
-        return res.status(400).json({
-            message: "Difficulty is required."
-        });
-    }
-
-    // 6. Validate student name
-    if (!req.body.studentName) {
-        return res.status(400).json({
-            message: "Student name is required."
-        });
-    }
-
-    // 7. Validate status
-    if (!req.body.status) {
-        return res.status(400).json({
-            message: "Status is required."
-        });
-    }
-
-    // 8. Validate subjectId
-    const subject = subjects.find(subject => {
-        return subject.id === Number(req.body.subjectId);
-    });
-
-    if (!subject) {
-        return res.status(400).json({
-            message: "Subject does not exist."
-        });
-    }
-
-    // 9. Update the request
-    request.title = req.body.title;
-    request.subjectId = Number(req.body.subjectId);
-    request.difficulty = req.body.difficulty;
-    request.description = req.body.description;
-    request.studentName = req.body.studentName;
-    request.status = req.body.status;
-
-    // 10. Save changes
-    fs.writeFileSync(
-        "./data/requests.json",
-        JSON.stringify(requests, null, 2)
-    );
-
-    // 11. Return updated request
-    res.json(request);
-}
-function deleteRequest(req, res) {
-
-    const requestIndex = requests.findIndex(request => {
-        return request.id === Number(req.params.id);
-    });
-
-    if (requestIndex === -1) {
-        return res.status(404).json({
-            message: "Request not found."
-        });
-    }
-
-    requests.splice(requestIndex, 1);
-    fs.writeFileSync(
-    "./data/requests.json",
-    JSON.stringify(requests, null, 2));
-    res.status(204).send();
-
-
-}
 module.exports = {
+    getAllRequests
+};
+const getPendingRequests = async (req, res) => {
+    try {
 
-    getRequests,
+        const result = await pool.query(`
+            SELECT
+                tr.id,
+                tr.title,
+                tr.description,
+                tr.difficulty,
+                tr.status,
+                tr.created_at,
 
-    getPendingRequests,
+                s.name AS subject_name,
 
-    getRequestById,
+                student.first_name AS student_first_name,
+                student.last_name AS student_last_name,
 
-    createRequest,
-     updateRequest,
-     deleteRequest
+                tutor.first_name AS tutor_first_name,
+                tutor.last_name AS tutor_last_name
+
+            FROM tutoring_requests tr
+
+            JOIN subjects s
+                ON tr.subject_id = s.id
+
+            JOIN users student
+                ON tr.student_id = student.id
+
+            LEFT JOIN users tutor
+                ON tr.tutor_id = tutor.id
+
+            WHERE tr.status = 'PENDING'
+
+            ORDER BY tr.created_at DESC
+        `);
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Erreur serveur."
+        });
+
+    }
+};
+
+const getRequestById = (req, res) => {
+
+     const request = requests.find(r => r.id === Number(req.params.id));
+
+  if (!request) {
+    return res.status(404).json({ message: "Demande introuvable." });
+  }
+
+  res.json(request);
+};
+const getRequestById = async (req, res) => {
+
+    try {
+
+        const result = await pool.query(
+
+            `
+            SELECT
+                tr.id,
+                tr.title,
+                tr.description,
+                tr.difficulty,
+                tr.status,
+                tr.created_at,
+
+                s.name AS subject_name,
+
+                student.first_name AS student_first_name,
+                student.last_name AS student_last_name,
+
+                tutor.first_name AS tutor_first_name,
+                tutor.last_name AS tutor_last_name
+
+            FROM tutoring_requests tr
+
+            JOIN subjects s
+                ON tr.subject_id = s.id
+
+            JOIN users student
+                ON tr.student_id = student.id
+
+            LEFT JOIN users tutor
+                ON tr.tutor_id = tutor.id
+
+            WHERE tr.id = $1
+            `,
+
+            [req.params.id]
+
+        );
+
+        if(result.rows.length===0){
+
+            return res.status(404).json({
+                message:"Demande introuvable."
+            });
+
+        }
+
+        res.json(result.rows[0]);
+
+    } catch(error){
+
+        console.error(error);
+
+        res.status(500).json({
+            message:"Erreur serveur."
+        });
+
+    }
+
+}
+const result = await pool.query(
+`
+INSERT INTO tutoring_requests
+(
+    student_id,
+    subject_id,
+    title,
+    description,
+    difficulty,
+    preferred_date
+)
+VALUES
+(
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6
+)
+RETURNING *;
+`,
+[
+    studentId,
+    subjectId,
+    title.trim(),
+    description.trim(),
+    difficulty,
+    preferredDate || null
+]
+);
+
+res.status(201).json({
+    message: "Demande créée avec succès.",
+    request: result.rows[0]
+});
+
+
+const pool = require("../config/db");
+
+const acceptRequest = async (req, res) => {
+
+    try {
+
+        const { tutorId } = req.body;
+
+        const result = await pool.query(
+
+            `
+            UPDATE tutoring_requests
+
+            SET
+                status = 'ACCEPTED',
+                tutor_id = $1,
+                updated_at = CURRENT_TIMESTAMP
+
+            WHERE
+                id = $2
+                AND status = 'PENDING'
+
+            RETURNING *;
+            `,
+
+            [
+                tutorId,
+                req.params.id
+            ]
+
+        );
+
+        if(result.rows.length === 0){
+
+            return res.status(400).json({
+                message:"Cette demande n'est plus disponible."
+            });
+
+        }
+
+        res.json({
+            message:"Demande acceptée.",
+            request: result.rows[0]
+        });
+
+    } catch(error){
+
+        console.error(error);
+
+        res.status(500).json({
+            message:"Erreur serveur."
+        });
+
+    }
 
 };
+const completeRequest = async (req, res) => {
+
+    try {
+
+        const { tutorResponse } = req.body;
+
+        // Validation
+        if (!tutorResponse || tutorResponse.trim() === "") {
+            return res.status(400).json({
+                message: "La réponse ne peut pas être vide."
+            });
+        }
+
+        const result = await pool.query(
+
+            `
+            UPDATE tutoring_requests
+
+            SET
+                tutor_response = $1,
+                response_at = CURRENT_TIMESTAMP,
+                status = 'COMPLETED',
+                updated_at = CURRENT_TIMESTAMP
+
+            WHERE
+                id = $2
+                AND status = 'ACCEPTED'
+
+            RETURNING *;
+            `,
+
+            [
+                tutorResponse,
+                req.params.id
+            ]
+
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({
+                message: "Impossible de répondre à cette demande."
+            });
+        }
+
+        res.json({
+            message: "Réponse envoyée et demande terminée.",
+            request: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Erreur serveur."
+        });
+
+    }
+
+};
+module.exports = {
+  getAllRequests,
+  getPendingRequests,
+  getRequestById,
+  createRequest,
+  acceptRequest,
+  completeRequest
+};
+
+

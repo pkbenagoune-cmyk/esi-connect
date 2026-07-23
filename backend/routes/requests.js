@@ -3,21 +3,24 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    getRequests,
+    getAllRequests,
     getPendingRequests,
     getRequestById,
-
     createRequest,
-    updateRequest,
-      deleteRequest
+    acceptRequest,
+    completeRequest
 } = require("../controllers/requestsController");
 
-router.get("/", getRequests);
-router.post("/",validateRequest, createRequest);
+// GET
+router.get("/", getAllRequests);
 router.get("/pending", getPendingRequests);
-
 router.get("/:id", getRequestById);
-router.put("/:id", validateRequest, updateRequest);
-router.delete("/:id", deleteRequest);
+
+// POST
+router.post("/", validateRequest, createRequest);
+
+// PATCH
+router.patch("/:id/accept", acceptRequest);
+router.patch("/:id/respond", completeRequest);
 
 module.exports = router;
