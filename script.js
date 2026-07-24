@@ -346,83 +346,7 @@ applyFilters();
 
 searchInput.addEventListener("input", applyFilters);
 
-submitRequestBtn.addEventListener("click", function () {
 
-    // Lire les valeurs du formulaire
-    const title = titleInput.value.trim();
-    const subject = subjectInput.value;
-    const difficulty = difficultyInput.value;
-    const description = descriptionInput.value.trim();
-
-    // Vérifier que tous les champs sont remplis
-    if (
-        title === "" ||
-        subject === "" ||
-        difficulty === "" ||
-        description === ""
-    ) {
-
-        errorMessage.textContent = "Please fill in all fields.";
-        errorMessage.classList.remove("hidden");
-
-        return;
-    }
-
-    // Cacher le message d'erreur
-    errorMessage.classList.add("hidden");
-
-    // Créer une nouvelle demande
-    const newRequest = {
-
-        id: requests.length + 1,
-
-        title: title,
-
-        subject: subject,
-
-        difficulty: difficulty,
-
-        description: description,
-
-        status: "PENDING",
-
-        studentName: "Current Student"
-
-    };
-
-
-    // Ajouter la demande au tableau
-    requests.push(newRequest);
-
-    // Save the updated array
-    saveRequests();
-
-
-    // Réafficher les cartes
-    applyFilters();
-
-    // Vider le formulaire
-    titleInput.value = "";
-    subjectInput.value = "";
-    difficultyInput.value = "";
-    descriptionInput.value = "";
-
-    // Fermer la modale (si tu utilises une checkbox)
-    // document.getElementById("requestModal").checked = false;
-    requestModal.classList.remove("flex");
-    requestModal.classList.add("hidden");
-    // fonctions pour le localstorage
-    function saveRequests() {
-
-        localStorage.setItem(
-            "requests",
-            JSON.stringify(requests)
-        );
-
-    }
-
-
-});
 const loginPassword = document.getElementById("loginPassword");
 const toggleLoginPassword = document.getElementById("toggleLoginPassword");
 
@@ -659,40 +583,4 @@ requestOverlay.addEventListener("click", () => {
 
 });
 
-// Submit
-submitRequestBtn.addEventListener("click", () => {
 
-    const title = document.getElementById("titleInput").value.trim();
-    const subject = document.getElementById("subjectInput").value;
-    const difficulty = document.getElementById("difficultyInput").value;
-    const description = document.getElementById("descriptionInput").value.trim();
-
-    const errorMessage = document.getElementById("errorMessage");
-
-    if (
-        title === "" ||
-        subject === "" ||
-        difficulty === "" ||
-        description === ""
-    ) {
-
-        errorMessage.textContent = "Please fill in all fields.";
-        errorMessage.classList.remove("hidden");
-        return;
-
-    }
-
-    errorMessage.classList.add("hidden");
-
-    alert("Request submitted successfully!");
-
-    requestModal.classList.remove("flex");
-    requestModal.classList.add("hidden");
-
-    // Reset the form
-    document.getElementById("titleInput").value = "";
-    document.getElementById("subjectInput").value = "";
-    document.getElementById("difficultyInput").value = "";
-    document.getElementById("descriptionInput").value = "";
-
-});

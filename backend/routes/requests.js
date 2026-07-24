@@ -8,7 +8,8 @@ const {
     getRequestById,
     createRequest,
     acceptRequest,
-    completeRequest
+    completeRequest,
+      getPublicCompletedRequests
 } = require("../controllers/requestsController");
 
 // GET

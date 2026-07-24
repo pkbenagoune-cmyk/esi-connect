@@ -1,4 +1,6 @@
 const pool = require("../config/db");
+console.log("TYPE DE POOL:", typeof pool);
+console.log("POOL:", pool);
 const getAllRequests = async (req, res) => {
     try {
 
@@ -119,16 +121,7 @@ const getPendingRequests = async (req, res) => {
     }
 };
 
-const getRequestById = (req, res) => {
 
-     const request = requests.find(r => r.id === Number(req.params.id));
-
-  if (!request) {
-    return res.status(404).json({ message: "Demande introuvable." });
-  }
-
-  res.json(request);
-};
 const getRequestById = async (req, res) => {
 
     try {
@@ -191,45 +184,57 @@ const getRequestById = async (req, res) => {
     }
 
 }
-const result = await pool.query(
-`
-INSERT INTO tutoring_requests
-(
-    student_id,
-    subject_id,
-    title,
-    description,
-    difficulty,
-    preferred_date
-)
-VALUES
-(
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6
-)
-RETURNING *;
-`,
-[
-    studentId,
-    subjectId,
-    title.trim(),
-    description.trim(),
-    difficulty,
-    preferredDate || null
-]
-);
+// ✅ AJOUTE CECI AUTOUR de ton code :
+const createRequest = async (req, res) => {
+    try {
+        // Récupère les données du body (ou adapte selon ton besoin)
+        const { studentId, subjectId, title, description, difficulty, preferredDate } = req.body;
 
-res.status(201).json({
-    message: "Demande créée avec succès.",
-    request: result.rows[0]
-});
+        const result = await pool.query(
+            `
+            INSERT INTO tutoring_requests
+            (
+                student_id,
+                subject_id,
+                title,
+                description,
+                difficulty,
+                preferred_date
+            )
+            VALUES
+            (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6
+            )
+            RETURNING *;
+            `,
+            [
+                studentId,
+                subjectId,
+                title.trim(),
+                description.trim(),
+                difficulty,
+                preferredDate || null
+            ]
+        );
+
+        res.status(201).json({
+            message: "Demande créée avec succès.",
+            request: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur." });
+    }
+};
 
 
-const pool = require("../config/db");
+
 
 const acceptRequest = async (req, res) => {
 

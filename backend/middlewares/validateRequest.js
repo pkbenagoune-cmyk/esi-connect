@@ -1,37 +1,40 @@
-const fs = require("fs");
-const path = require("path");
-const subjectsfilePath = path.join(__dirname, "..","data","subjects.json");
-const requestsfilePath = path.join(__dirname, "..","data","requests.json");
-let requests = JSON.parse(fs.readFileSync(requestsfilePath, "utf-8"));
-let subjects = JSON.parse(fs.readFileSync(subjectsfilePath, "utf-8"));
-
 function validateRequest(req, res, next) {
 
-    if (!req.body.title) {
+    const {
+        title,
+        description,
+        subjectId,
+        studentId,
+        difficulty
+    } = req.body;
+
+    if (!title || !title.trim()) {
         return res.status(400).json({
             message: "Title is required."
         });
     }
 
-    if (!req.body.description) {
+    if (!description || !description.trim()) {
         return res.status(400).json({
             message: "Description is required."
         });
     }
 
-    if (!req.body.subjectId) {
+    if (!subjectId) {
         return res.status(400).json({
             message: "Subject ID is required."
         });
     }
 
-    const subject = subjects.find(subject => {
-        return subject.id === Number(req.body.subjectId);
-    });
-
-    if (!subject) {
+    if (!studentId) {
         return res.status(400).json({
-            message: "Subject does not exist."
+            message: "Student ID is required."
+        });
+    }
+
+    if (!difficulty) {
+        return res.status(400).json({
+            message: "Difficulty is required."
         });
     }
 
