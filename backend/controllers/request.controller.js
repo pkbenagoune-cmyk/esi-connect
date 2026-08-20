@@ -4,7 +4,8 @@ const createRequest = async (req, res) => {
   try {
     // SEMAINE 4 : l'identité vient encore du corps de la requête.
     // En semaine 5, elle viendra du token (req.user.id).
-    const { studentId, subjectId, title, description, difficulty, preferredDate } = req.body;
+    const { subjectId, title, description, difficulty, preferredDate } = req.body;
+    const studentId = req.user.id;
 
     if (!subjectId || !title || !description || !difficulty) {
       return res.status(400).json({ message: "Champs obligatoires manquants." });
@@ -30,7 +31,7 @@ const createRequest = async (req, res) => {
 
 const getMyRequests = async (req, res) => {
   try {
-    const studentId = req.query.studentId;   // provisoire : viendra du token
+    const studentId = req.user.id;   // provisoire : viendra du token
 
     const result = await pool.query(
       `SELECT tr.*, s.name AS subject_name, u.first_name AS tutor_first_name, u.last_name AS tutor_last_name
@@ -70,7 +71,7 @@ const getPendingRequests = async (req, res) => {
 const acceptRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
-    const { tutorId } = req.body;   // provisoire : viendra du token
+    const tutorId = req.user.id;   // provisoire : viendra du token
 
     const result = await pool.query(
       `UPDATE tutoring_requests
@@ -101,7 +102,7 @@ const acceptRequest = async (req, res) => {
 
 const getTutorRequests = async (req, res) => {
   try {
-    const tutorId = req.query.tutorId;   // provisoire : viendra du token
+    const tutorId = req.user.id;   // provisoire : viendra du token
 
     const result = await pool.query(
       `SELECT tr.*, s.name AS subject_name, u.first_name AS student_first_name, u.last_name AS student_last_name
@@ -123,7 +124,7 @@ const getTutorRequests = async (req, res) => {
 const completeRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
-    const { tutorId } = req.body;   // provisoire : viendra du token
+    const tutorId = req.user.id;   // provisoire : viendra du token
 
     const result = await pool.query(
       `UPDATE tutoring_requests
@@ -155,7 +156,8 @@ const completeRequest = async (req, res) => {
 const respondToRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
-    const { tutorId, tutorResponse } = req.body;   // tutorId provisoire : viendra du token
+    const { tutorResponse } = req.body;
+    const tutorId = req.user.id;   // tutorId provisoire : viendra du token
 
     if (!tutorResponse || !tutorResponse.trim()) {
       return res.status(400).json({ message: "La réponse ne peut pas être vide." });
@@ -193,28 +195,88 @@ const respondToRequest = async (req, res) => {
 const getPublicCompletedRequests = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT tr.id, tr.title, tr.description, tr.difficulty, tr.status,
-              tr.tutor_response, tr.created_at, tr.response_at,
-              s.name AS subject_name,
-              st.first_name AS student_first_name, st.last_name AS student_last_name,
-              tu.first_name AS tutor_first_name, tu.last_name AS tutor_last_name
+      `SELECT
+          tr.id,
+          tr.title,
+          tr.description,
+          tr.difficulty,
+          tr.status,
+          tr.tutor_response,
+          tr.created_at,
+          tr.response_at,
+
+          -- Matière
+          s.name AS subject_name,
+
+          -- Étudiant
+          st.first_name AS student_first_name,
+          st.last_name AS student_last_name,
+
+          -- Tuteur
+          tu.first_name AS tutor_first_name,
+          tu.last_name AS tutor_last_name,
+
+          -- Réputation du tuteur
+          COALESCE(rep.avg_stars, 0) AS average_stars,
+          COALESCE(rep.nb_ratings, 0) AS total_ratings
+
        FROM tutoring_requests tr
-       JOIN subjects s ON tr.subject_id = s.id
-       JOIN users st ON tr.student_id = st.id
-       JOIN users tu ON tr.tutor_id = tu.id
+
+       -- Récupérer la matière de la demande
+       JOIN subjects s
+         ON tr.subject_id = s.id
+
+       -- Récupérer l'étudiant
+       JOIN users st
+         ON tr.student_id = st.id
+
+       -- Récupérer le tuteur
+       JOIN users tu
+         ON tr.tutor_id = tu.id
+
+       -- Récupérer la réputation du tuteur
+       LEFT JOIN (
+         SELECT
+           tutor_id,
+           ROUND(AVG(stars)::numeric, 1) AS avg_stars,
+           COUNT(*) AS nb_ratings
+         FROM ratings
+         GROUP BY tutor_id
+       ) rep
+         ON rep.tutor_id = tr.tutor_id
+
+       -- Seulement les demandes terminées
        WHERE tr.status = 'COMPLETED'
+
+       -- Avec une réponse du tuteur
        AND tr.tutor_response IS NOT NULL
+
+       -- Et cette réponse ne doit pas être vide
        AND TRIM(tr.tutor_response) != ''
+
+       -- Les plus récentes en premier
        ORDER BY tr.response_at DESC NULLS LAST`
     );
 
-    res.json(result.rows);
+    // pg peut retourner certains nombres sous forme de chaînes.
+    // On les convertit en vrais nombres avant d'envoyer le JSON.
+    const data = result.rows.map((request) => ({
+      ...request,
+
+      average_stars: parseFloat(request.average_stars),
+      total_ratings: parseInt(request.total_ratings, 10)
+    }));
+
+    res.json(data);
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erreur serveur." });
+
+    res.status(500).json({
+      message: "Erreur serveur."
+    });
   }
 };
-
 const getPublicStats = async (req, res) => {
   try {
     const requestsResult = await pool.query(`

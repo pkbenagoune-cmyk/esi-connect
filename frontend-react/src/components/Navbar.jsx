@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { socket } from "../services/socket";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [nonLus, setNonLus] = useState(0);
 
   const dashboardPath = user?.role === "STUDENT" ? "/student" : "/tutor";
 
@@ -11,6 +14,21 @@ export default function Navbar() {
     logout();
     navigate("/");
   }
+
+  // Écoute des notifications de nouveaux messages, où que l'utilisateur se trouve
+  useEffect(() => {
+    if (!user) return;
+
+    function onUnreadNotification() {
+      setNonLus(prev => prev + 1);
+    }
+
+    socket.on("unread-notification", onUnreadNotification);
+
+    return () => {
+      socket.off("unread-notification", onUnreadNotification);
+    };
+  }, [user]);
 
   return (
     <nav className="bg-white shadow-sm border-b border-slate-100">
@@ -25,6 +43,20 @@ export default function Navbar() {
               <li>
                 <Link to={dashboardPath} className="hover:text-blue-600 transition">
                   Mon espace
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/messages"
+                  className="relative hover:text-blue-600 transition"
+                  onClick={() => setNonLus(0)}
+                >
+                  Messages
+                  {nonLus > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                      {nonLus}
+                    </span>
+                  )}
                 </Link>
               </li>
               <li className="flex items-center gap-2 text-sm">

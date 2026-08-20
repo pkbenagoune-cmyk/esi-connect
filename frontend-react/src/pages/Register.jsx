@@ -1,47 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("STUDENT");
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "STUDENT"
+  });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Rediriger si déjà connecté
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === "STUDENT" ? "/student" : "/tutor");
+    }
+  }, [user, navigate]);
+
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
-
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) {
-      setError("Tous les champs sont obligatoires.");
-      return;
-    }
-
     setSubmitting(true);
 
     try {
-      // Ta route /auth/register ne renvoie pas de token, d'où le second appel à /auth/login.
-      await api("/auth/register", {
+      const data = await api("/auth/register", {
         method: "POST",
         body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
-          password,
-          role
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          email: form.email.trim(),
+          password: form.password,
+          role: form.role
         })
-      });
-
-      const data = await api("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email: email.trim(), password })
       });
 
       login(data);
@@ -57,28 +58,28 @@ export default function Register() {
     <div className="max-w-md mx-auto px-6 py-20">
       <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Créer un compte</h2>
-        <p className="text-slate-500 mb-6">Rejoins ESI-Connect pour apprendre ou aider</p>
+        <p className="text-slate-500 mb-6">Rejoins la communauté ESI-Connect</p>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4 grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Prénom</label>
               <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Ton prénom"
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                placeholder="Ali"
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Nom</label>
               <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Ton nom"
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                placeholder="Ben"
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -87,9 +88,10 @@ export default function Register() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="toinom@esi.dz"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="ali@esi.dz"
               className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -98,37 +100,25 @@ export default function Register() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Mot de passe</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Choisis un mot de passe"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="••••••••"
               className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-slate-700 mb-2">Je suis...</label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="flex items-center gap-2 p-3 border rounded-xl cursor-pointer border-slate-200">
-                <input
-                  type="radio"
-                  name="role"
-                  value="STUDENT"
-                  checked={role === "STUDENT"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                <span>Étudiant</span>
-              </label>
-              <label className="flex items-center gap-2 p-3 border rounded-xl cursor-pointer border-slate-200">
-                <input
-                  type="radio"
-                  name="role"
-                  value="TUTOR"
-                  checked={role === "TUTOR"}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-                <span>Tuteur</span>
-              </label>
-            </div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Rôle</label>
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="STUDENT">Étudiant</option>
+              <option value="TUTOR">Tuteur</option>
+            </select>
           </div>
 
           {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
@@ -138,7 +128,7 @@ export default function Register() {
             disabled={submitting}
             className="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
           >
-            {submitting ? "Création..." : "Créer le compte"}
+            {submitting ? "Création..." : "S'inscrire"}
           </button>
         </form>
 

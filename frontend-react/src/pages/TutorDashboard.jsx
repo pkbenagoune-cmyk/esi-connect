@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 import PendingCard from "../components/PendingCard";
 import TutorRequestCard from "../components/TutorRequestCard";
+import ReputationBadge from "../components/ReputationBadge";
 
 export default function TutorDashboard() {
   const [pending, setPending] = useState([]);
@@ -9,6 +11,7 @@ export default function TutorDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionError, setActionError] = useState("");
+  const { user } = useAuth();
 
   async function loadAll() {
     try {
@@ -104,6 +107,7 @@ export default function TutorDashboard() {
             ))}
           </div>
         )}
+        <ReputationBadge tutorId={user.id} />
       </section>
     </div>
   );

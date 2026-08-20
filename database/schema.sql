@@ -36,3 +36,23 @@ CREATE TABLE tutoring_requests (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    request_id INTEGER NOT NULL REFERENCES tutoring_requests(id),
+    sender_id INTEGER NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read_at TIMESTAMP
+);
+
+CREATE INDEX idx_messages_request ON messages(request_id);
+
+CREATE TABLE ratings (
+    id SERIAL PRIMARY KEY,
+    request_id INTEGER NOT NULL REFERENCES tutoring_requests(id) UNIQUE,
+    student_id INTEGER NOT NULL REFERENCES users(id),
+    tutor_id INTEGER NOT NULL REFERENCES users(id),
+    stars INTEGER NOT NULL CHECK (stars BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

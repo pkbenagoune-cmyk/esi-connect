@@ -39,3 +39,32 @@ INSERT INTO tutoring_requests
  'Intermediate', 'COMPLETED',
  'The trick is to always rotate your axes along the inclined plane: x parallel to the slope, y perpendicular. Then the weight splits into mg sin(theta) and mg cos(theta), and friction opposes the motion along x. Draw the diagram in that order every time and it becomes mechanical.',
  NOW() - INTERVAL '6 hours', NOW() - INTERVAL '4 days', NOW() - INTERVAL '6 hours');
+
+-- Messages de test
+INSERT INTO messages
+(request_id, sender_id, content, created_at)
+VALUES
+-- Conversation de la demande 2 : Sara ↔ Yasmine
+(2, 2, 'Bonjour Yasmine, je voudrais commencer par les valeurs propres.', NOW() - INTERVAL '2 hours'),
+(2, 3, 'Bonjour Sara ! Bien sûr. Commençons par revoir le calcul du polynôme caractéristique.', NOW() - INTERVAL '90 minutes'),
+(2, 2, 'D’accord, je bloque justement sur cette partie.', NOW() - INTERVAL '60 minutes'),
+(2, 3, 'Pas de problème, je vais te montrer un exemple étape par étape.', NOW() - INTERVAL '30 minutes'),
+
+-- Conversation de la demande 4 : Sara ↔ Karim
+(4, 2, 'Bonjour Karim, merci pour ton aide sur les bases de données.', NOW() - INTERVAL '5 hours'),
+(4, 4, 'Avec plaisir ! As-tu compris la différence entre une clé primaire et une clé étrangère ?', NOW() - INTERVAL '4 hours'),
+(4, 2, 'Oui, maintenant c’est beaucoup plus clair.', NOW() - INTERVAL '3 hours'),
+(4, 4, 'Parfait ! N’hésite pas à me contacter si tu as d’autres questions.', NOW() - INTERVAL '2 hours'),
+
+-- Conversation de la demande 6 : Sara ↔ Yasmine
+(6, 2, 'Bonjour Yasmine, je ne comprends pas la décomposition du poids sur le plan incliné.', NOW() - INTERVAL '4 hours'),
+(6, 3, 'Il faut commencer par choisir les axes parallèlement et perpendiculairement au plan.', NOW() - INTERVAL '3 hours'),
+(6, 2, 'Donc la composante parallèle est mg sin(theta) ?', NOW() - INTERVAL '2 hours'),
+(6, 3, 'Exactement ! Et la composante perpendiculaire est mg cos(theta).', NOW() - INTERVAL '1 hour');
+
+-- Avis de test sur les demandes COMPLETED
+INSERT INTO ratings
+(request_id, student_id, tutor_id, stars, comment, created_at)
+VALUES
+(4, 2, 4, 5, 'Excellent tuteur, explications très claires.', NOW() - INTERVAL '1 hour'),
+(6, 2, 3, 4, 'Très bonne aide, les explications étaient utiles.', NOW() - INTERVAL '45 minutes');

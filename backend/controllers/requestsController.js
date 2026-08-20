@@ -1,6 +1,4 @@
 const pool = require("../config/db");
-console.log("TYPE DE POOL:", typeof pool);
-console.log("POOL:", pool);
 const getAllRequests = async (req, res) => {
     try {
 

@@ -1,43 +1,58 @@
-DROP TABLE IF EXISTS tutoring_requests;
-DROP TABLE IF EXISTS subjects;
-DROP TABLE IF EXISTS users;
-CREATE TABLE users(
-id SERIAL PRIMARY KEY,
-first_name VARCHAR(100) NOT NULL ,
-last_name VARCHAR(100) NOT NULL ,
-email VARCHAR(255) UNIQUE NOT NULL,
- password_hash TEXT NOT NULL,
-role VARCHAR(20)
-NOT NULL
-CHECK (role IN ('STUDENT','TUTOR')),
-  created_at TIMESTAMP
-        NOT NULL
-        DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE subjects(
-id SERIAL PRIMARY KEY,
-name VARCHAR(100)  UNIQUE NOT NULL,
-description TEXT
-);
-CREATE TABLE tutoring_requests(
-id SERIAL PRIMARY KEY,
- tutor_id INTEGER  REFERENCES users(id)   ,
- subject_id INTEGER NOT NULL REFERENCES subjects(id),
- student_id INTEGER NOT NULL REFERENCES users(id),
- title VARCHAR(255) NOT NULL ,
- description TEXT NOT NULL,
- difficulty VARCHAR(20) NOT NULL  CHECK (difficulty IN ('BEGINNER','INTERMEDIATE','ADVANCED')),
- status VARCHAR(100) NOT NULL DEFAULT 'PENDING' CHECK (status IN (
-    'PENDING',
-    'ACCEPTED',
-    'COMPLETED'
- )),
- tutor_response TEXT,
- response_at TIMESTAMP,
- created_at TIMESTAMP
-        NOT NULL
-        DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+DROP TABLE IF EXISTS ratings CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS tutoring_requests CASCADE;
+DROP TABLE IF EXISTS subjects CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
- 
+CREATE TABLE subjects (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description TEXT
+);
+
+CREATE TABLE tutoring_requests (
+  id SERIAL PRIMARY KEY,
+  student_id INTEGER NOT NULL REFERENCES users(id),
+  tutor_id INTEGER REFERENCES users(id),
+  subject_id INTEGER NOT NULL REFERENCES subjects(id),
+  title VARCHAR(200) NOT NULL,
+  description TEXT NOT NULL,
+  difficulty VARCHAR(30) NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+  tutor_response TEXT,
+  response_at TIMESTAMP,
+  preferred_date DATE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
+);
+
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER NOT NULL REFERENCES tutoring_requests(id),
+  sender_id INTEGER NOT NULL REFERENCES users(id),
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  read_at TIMESTAMP
+);
+
+CREATE INDEX idx_messages_request ON messages(request_id);
+
+CREATE TABLE ratings (
+  id SERIAL PRIMARY KEY,
+  request_id INTEGER NOT NULL REFERENCES tutoring_requests(id) UNIQUE,
+  student_id INTEGER NOT NULL REFERENCES users(id),
+  tutor_id INTEGER NOT NULL REFERENCES users(id),
+  stars INTEGER NOT NULL CHECK (stars BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

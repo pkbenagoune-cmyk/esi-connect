@@ -19,6 +19,7 @@ export default function TutorRequestCard({ request, onRespond }) {
       <StatusBadge status={request.status} />
 
       <h3 className="mt-4 text-xl font-semibold text-slate-900">{request.title}</h3>
+      <p className="mt-2 text-sm text-slate-600">{request.description}</p>
 
       <div className="mt-3 space-y-1 text-slate-600 text-sm">
         <p><strong>Matière :</strong> {request.subject_name}</p>

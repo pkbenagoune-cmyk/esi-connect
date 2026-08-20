@@ -2,11 +2,16 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
+
+// Nouvelles pages de messagerie
+import Conversations from "./pages/Conversations";
+import Conversation from "./pages/Conversation";
 
 export default function App() {
   return (
@@ -15,9 +20,12 @@ export default function App() {
 
       <main className="flex-1">
         <Routes>
+          {/* Pages publiques */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* Dashboard étudiant */}
           <Route
             path="/student"
             element={
@@ -26,11 +34,33 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Dashboard tuteur */}
           <Route
             path="/tutor"
             element={
               <ProtectedRoute role="TUTOR">
                 <TutorDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Liste des conversations */}
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Conversations />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Conversation d'une demande précise */}
+          <Route
+            path="/messages/:requestId"
+            element={
+              <ProtectedRoute>
+                <Conversation />
               </ProtectedRoute>
             }
           />
