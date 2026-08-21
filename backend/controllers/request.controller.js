@@ -34,10 +34,11 @@ const getMyRequests = async (req, res) => {
     const studentId = req.user.id;   // provisoire : viendra du token
 
     const result = await pool.query(
-      `SELECT tr.*, s.name AS subject_name, u.first_name AS tutor_first_name, u.last_name AS tutor_last_name
+      `SELECT tr.*, s.name AS subject_name, u.first_name AS tutor_first_name, u.last_name AS tutor_last_name, r.id AS rating_id
        FROM tutoring_requests tr
        JOIN subjects s ON tr.subject_id = s.id
        LEFT JOIN users u ON tr.tutor_id = u.id
+       LEFT JOIN ratings r ON tr.id = r.request_id
        WHERE tr.student_id = $1
        ORDER BY tr.created_at DESC`,
       [studentId]

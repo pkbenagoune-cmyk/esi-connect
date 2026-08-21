@@ -104,7 +104,7 @@ export default function StudentDashboard() {
         ) : (
           <div className="grid md:grid-cols-3 gap-8">
             {requests.map((request) => (
-              <MyRequestCard key={request.id} request={request} />
+              <MyRequestCard key={request.id} request={request} onRate={loadRequests} />
             ))}
           </div>
         )
