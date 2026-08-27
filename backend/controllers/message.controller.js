@@ -158,6 +158,7 @@ const getConversations = async (req, res) => {
 };
 
 module.exports = {
+  getConversationIfParticipant,
   getMessages,
   sendMessage,
   markMessagesAsRead,

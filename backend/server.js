@@ -4,11 +4,15 @@ const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET manquant : vérifiez votre fichier .env");
+  process.exit(1);
+}
+
 const authRoutes = require("./routes/auth.routes");
 const requestRoutes = require("./routes/request.routes");
 const subjectRoutes = require("./routes/subject.routes");
 const tutorRoutes = require("./routes/tutor.routes");
-const ratingRoutes = require("./routes/rating.route");
 
 const app = express();
 const server = http.createServer(app);
@@ -16,7 +20,7 @@ const server = http.createServer(app);
 // Configuration Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"]
   }
 });
@@ -35,7 +39,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/tutors", tutorRoutes);
-app.use("/api/ratings", ratingRoutes);
 
 // Middleware 404 JSON
 app.use((req, res) => {

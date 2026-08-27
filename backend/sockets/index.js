@@ -13,7 +13,7 @@ module.exports = (io) => {
     }
 
     try {
-      socket.user = jwt.verify(token, process.env.JWT_SECRET || "votre_cle_secrete");
+      socket.user = jwt.verify(token, process.env.JWT_SECRET);
       next();
     } catch (error) {
       next(new Error("Token invalide."));

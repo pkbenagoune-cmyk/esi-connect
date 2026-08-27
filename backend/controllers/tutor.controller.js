@@ -145,34 +145,6 @@ const getTutorStats = async (req, res) => {
 };
 
 
-async function getTutorReputation(req, res) {
-  try {
-    const { id } = req.params;
-
-    const result = await pool.query(
-      `SELECT
-         COALESCE(AVG(r.stars), 0) AS average,
-         COUNT(r.id) AS count
-       FROM ratings r
-       JOIN tutoring_requests tr ON tr.id = r.request_id
-       WHERE tr.tutor_id = $1`,
-      [id]
-    );
-
-    const { average, count } = result.rows[0];
-
-    res.json({
-      average: parseFloat(average).toFixed(1),
-      count: parseInt(count, 10)
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erreur serveur." });
-  }
-}
-// ============================================================
-// GET /api/tutors/ranking
-// Classement des tuteurs par moyenne bayésienne
 // ============================================================
 const getTutorRanking = async (req, res) => {
   try {
@@ -205,15 +177,24 @@ const getTutorRanking = async (req, res) => {
            2
          ) AS "bayesianScore"
        FROM stats_tuteurs st, stats_globales sg
-       ORDER BY "bayesianScore" DESC`,
+       WHERE st.nombre_avis > 0
+       ORDER BY "bayesianScore" DESC
+       LIMIT 10`,
       [C]
     );
 
-    res.json(result.rows);
+    const classement = result.rows.map((row, index) => ({
+      rank: index + 1,
+      ...row,
+      totalRatings: parseInt(row.totalRatings, 10),
+      averageStars: parseFloat(row.averageStars),
+      bayesianScore: parseFloat(row.bayesianScore)
+    }));
+
+    res.json(classement);
 
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       message: "Erreur serveur."
     });
@@ -222,6 +203,6 @@ const getTutorRanking = async (req, res) => {
 module.exports = {
   getMyStats,
   getTutorStats,
-  getTutorReputation,
   getTutorRanking
+};
 };

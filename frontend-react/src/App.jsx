@@ -12,6 +12,7 @@ import TutorDashboard from "./pages/TutorDashboard";
 // Nouvelles pages de messagerie
 import Conversations from "./pages/Conversations";
 import Conversation from "./pages/Conversation";
+import Tutors from "./pages/Tutors";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/tutors" element={<Tutors />} />
 
           {/* Dashboard étudiant */}
           <Route

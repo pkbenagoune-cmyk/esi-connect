@@ -11,16 +11,19 @@ export default function TutorDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionError, setActionError] = useState("");
+  const [stats, setStats] = useState(null);
   const { user } = useAuth();
 
   async function loadAll() {
     try {
-      const [p, m] = await Promise.all([
+      const [p, m, s] = await Promise.all([
         api("/requests/pending"),
-        api("/requests/tutor/my")
+        api("/requests/tutor/my"),
+        api("/tutors/me/stats")
       ]);
       setPending(p);
       setMine(m);
+      setStats(s);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -107,7 +110,29 @@ export default function TutorDashboard() {
             ))}
           </div>
         )}
-        <ReputationBadge tutorId={user.id} />
+        {stats && (
+          <>
+            <ReputationBadge average={stats.averageStars} count={stats.totalRatings} />
+            {stats.totalRatings > 0 && (
+              <div className="mt-4 max-w-xs">
+                {[5, 4, 3, 2, 1].map(n => {
+                  const nb = stats.distribution[n];
+                  const pct = (nb / stats.totalRatings) * 100;
+                  return (
+                    <div key={n} className="flex items-center gap-2 text-xs">
+                      <span className="w-3 text-slate-500">{n}</span>
+                      <span className="text-amber-500">★</span>
+                      <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-400" style={{ width: `${pct}%` }} />
+                      </div>
+                      <span className="w-4 text-slate-400">{nb}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </section>
     </div>
   );

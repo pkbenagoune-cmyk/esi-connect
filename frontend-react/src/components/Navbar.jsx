@@ -74,6 +74,11 @@ export default function Navbar() {
           ) : (
             <>
               <li>
+                <Link to="/tutors" className="hover:text-blue-600 transition">
+                  Tuteurs
+                </Link>
+              </li>
+              <li>
                 <Link to="/login" className="hover:text-blue-600 transition">
                   Connexion
                 </Link>

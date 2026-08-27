@@ -218,8 +218,8 @@ const getPublicCompletedRequests = async (req, res) => {
           tu.last_name AS tutor_last_name,
 
           -- Réputation du tuteur
-          COALESCE(rep.avg_stars, 0) AS average_stars,
-          COALESCE(rep.nb_ratings, 0) AS total_ratings
+          COALESCE(rep.avg_stars, 0) AS averageStars,
+          COALESCE(rep.nb_ratings, 0) AS totalRatings
 
        FROM tutoring_requests tr
 
@@ -264,8 +264,8 @@ const getPublicCompletedRequests = async (req, res) => {
     const data = result.rows.map((request) => ({
       ...request,
 
-      average_stars: parseFloat(request.average_stars),
-      total_ratings: parseInt(request.total_ratings, 10)
+      averageStars: parseFloat(request.averageStars),
+      totalRatings: parseInt(request.totalRatings, 10)
     }));
 
     res.json(data);

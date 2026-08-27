@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
+const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
 
 const {
   createRequest,
@@ -22,28 +22,38 @@ const {
 } = require("../controllers/message.controller");
 
 const {
-  createRating
+  createRating,
+  updateRating,
+  getRating
 } = require("../controllers/rating.controller");
 
-// Routes publiques
+// Routes publiques — AVANT le router.use
 router.get("/completed/public", getPublicCompletedRequests);
 router.get("/stats/public", getPublicStats);
 
-// Routes protégées
+// Tout ce qui suit exige d'être connecté
 router.use(authMiddleware);
 
-router.post("/", createRequest);
-router.get("/my", getMyRequests);
-router.get("/pending", getPendingRequests);
-router.get("/tutor/my", getTutorRequests);
+// Les deux rôles — l'autorisation se fait par PARTICIPATION, en SQL
 router.get("/conversations", getConversations);
 
-router.patch("/:id/accept", acceptRequest);
-router.patch("/:id/respond", respondToRequest);
-router.patch("/:id/complete", completeRequest);
+// Réservé aux étudiants
+router.post("/", authorizeRoles("STUDENT"), createRequest);
+router.get("/my", authorizeRoles("STUDENT"), getMyRequests);
+router.post("/:id/rating", authorizeRoles("STUDENT"), createRating);
+router.patch("/:id/rating", authorizeRoles("STUDENT"), updateRating);
+
+// Réservé aux tuteurs
+router.get("/pending", authorizeRoles("TUTOR"), getPendingRequests);
+router.get("/tutor/my", authorizeRoles("TUTOR"), getTutorRequests);
+router.patch("/:id/accept", authorizeRoles("TUTOR"), acceptRequest);
+router.patch("/:id/respond", authorizeRoles("TUTOR"), respondToRequest);
+router.patch("/:id/complete", authorizeRoles("TUTOR"), completeRequest);
+
+// Les deux rôles — participation vérifiée dans le controller
 router.get("/:id/messages", getMessages);
 router.post("/:id/messages", sendMessage);
 router.patch("/:id/messages/read", markMessagesAsRead);
-router.post("/:id/rating", createRating);
+router.get("/:id/rating", getRating);
 
 module.exports = router;

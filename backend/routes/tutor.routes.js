@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
 
 const {
   getMyStats,
   getTutorStats,
-  getTutorReputation
+  getTutorRanking
 } = require("../controllers/tutor.controller");
 
-// IMPORTANT : /me/stats doit être AVANT /:id/stats
-router.get("/me/stats", getMyStats);
+// Routes spécifiques d'abord (sinon "me" et "top" seraient pris pour des :id)
+router.get("/top", getTutorRanking);                    // publique
+router.get("/me/stats", authMiddleware, authorizeRoles("TUTOR"), getMyStats);
 
+// Routes dynamiques ensuite
 router.get("/:id/stats", getTutorStats);
-
-router.get("/:id/reputation", getTutorReputation);
 
 module.exports = router;

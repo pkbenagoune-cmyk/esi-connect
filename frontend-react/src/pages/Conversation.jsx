@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -6,7 +6,7 @@ import { socket } from "../services/socket";
 import MessageBubble from "../components/MessageBubble";
 
 export default function Conversation() {
-  const { requestId } = useParams();
+  const requestId = Number(useParams().requestId);
   const { user } = useAuth();
 
   const [messages, setMessages] = useState([]);
@@ -14,6 +14,8 @@ export default function Conversation() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [socketReady, setSocketReady] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const typingTimer = useRef(null);
 
   // 1. CHARGEMENT INITIAL REST
   useEffect(() => {
@@ -44,6 +46,7 @@ export default function Conversation() {
     }
 
     function onNewMessage(message) {
+      if (Number(message.request_id) !== requestId) return;
       console.log("New message received:", message);
       setMessages((prev) => [...prev, message]);
     }
@@ -62,16 +65,24 @@ export default function Conversation() {
 
     socket.on("new-message", onNewMessage);
     socket.on("error-message", onError);
+    socket.on("user-typing", onTyping);
 
     return () => {
       socket.off("connect", joinRoom);
       socket.off("new-message", onNewMessage);
       socket.off("error-message", onError);
+      socket.off("user-typing", onTyping);
+      clearTimeout(typingTimer.current);
       socket.emit("leave-conversation", requestId);
     };
   }, [requestId]);
 
   // 3. ENVOI VIA SOCKET.IO (fallback REST si socket pas prêt)
+  function handleChange(event) {
+    setText(event.target.value);
+    socket.emit("typing", { requestId });
+  }
+
   function handleSend(event) {
     event.preventDefault();
     if (!text.trim()) return;
@@ -90,13 +101,12 @@ export default function Conversation() {
         body: JSON.stringify({ content: text.trim() })
       })
         .then((newMsg) => {
-          setMessages((prev) => [...prev, newMsg]);
+          setMessages((prev) => [...prev, newMsg.data]);
           setText("");
         })
         .catch((err) => setError(err.message));
     }
   }
-
   if (loading) {
     return <p className="text-center py-20 text-slate-500">Chargement...</p>;
   }
@@ -116,11 +126,12 @@ export default function Conversation() {
         ))}
       </div>
 
+      {typing && <p className="text-xs text-slate-400 italic px-4">En train d'écrire...</p>}
       <form onSubmit={handleSend} className="flex gap-2 p-4 border-t">
         <input
           type="text"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleChange}
           placeholder="Écris ton message..."
           className="flex-1 border rounded px-3 py-2"
         />

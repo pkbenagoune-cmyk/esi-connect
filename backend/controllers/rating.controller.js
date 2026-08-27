@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { getConversationIfParticipant } = require("./message.controller");
 
 /**
  * Créer un avis
@@ -180,31 +181,8 @@ const getRating = async (req, res) => {
     });
   }
 };
-
-/**
- * Helper :
- * Vérifie que l'utilisateur est participant
- * de la conversation d'une demande.
- */
-async function getConversationIfParticipant(requestId, userId) {
-  const result = await pool.query(
-    `SELECT id,
-            student_id,
-            tutor_id,
-            status
-     FROM tutoring_requests
-     WHERE id = $1
-     AND tutor_id IS NOT NULL
-     AND (student_id = $2 OR tutor_id = $2)`,
-    [requestId, userId]
-  );
-
-  return result.rows.length > 0
-    ? result.rows[0]
-    : null;
-}
-
 module.exports = {
+
   createRating,
   updateRating,
   getRating
