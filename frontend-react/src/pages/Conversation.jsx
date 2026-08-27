@@ -56,11 +56,17 @@ export default function Conversation() {
       setError(msg);
     }
 
+    function onTyping() {
+      setTyping(true);
+      clearTimeout(typingTimer.current);
+      typingTimer.current = setTimeout(() => setTyping(false), 2500);
+    }
+
     if (socket.connected) {
       joinRoom();
     } else {
       socket.on("connect", joinRoom);
-      socket.connect(); // S'assurer que le socket essaie de se connecter
+      socket.connect();
     }
 
     socket.on("new-message", onNewMessage);
@@ -77,7 +83,7 @@ export default function Conversation() {
     };
   }, [requestId]);
 
-  // 3. ENVOI VIA SOCKET.IO (fallback REST si socket pas prêt)
+  // 3. ENVOI VIA SOCKET.IO
   function handleChange(event) {
     setText(event.target.value);
     socket.emit("typing", { requestId });
@@ -87,26 +93,13 @@ export default function Conversation() {
     event.preventDefault();
     if (!text.trim()) return;
 
-    if (socketReady && socket.connected) {
-      // Envoi via Socket.IO
-      socket.emit("send-message", {
-        requestId,
-        content: text.trim(),
-      });
-      setText("");
-    } else {
-      // Fallback REST
-      api(`/requests/${requestId}/messages`, {
-        method: "POST",
-        body: JSON.stringify({ content: text.trim() })
-      })
-        .then((newMsg) => {
-          setMessages((prev) => [...prev, newMsg.data]);
-          setText("");
-        })
-        .catch((err) => setError(err.message));
-    }
+    socket.emit("send-message", {
+      requestId,
+      content: text.trim(),
+    });
+    setText("");
   }
+
   if (loading) {
     return <p className="text-center py-20 text-slate-500">Chargement...</p>;
   }
@@ -114,7 +107,9 @@ export default function Conversation() {
   return (
     <div className="flex flex-col h-screen">
       {error && <p className="text-red-600 text-center py-2">{error}</p>}
-      {!socketReady && <p className="text-orange-500 text-center text-sm">Connexion temps réel en cours...</p>}
+      {!socketReady && (
+        <p className="text-orange-500 text-center text-sm">Connexion temps réel en cours...</p>
+      )}
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {messages.map((msg) => (
@@ -127,6 +122,7 @@ export default function Conversation() {
       </div>
 
       {typing && <p className="text-xs text-slate-400 italic px-4">En train d'écrire...</p>}
+
       <form onSubmit={handleSend} className="flex gap-2 p-4 border-t">
         <input
           type="text"
@@ -135,8 +131,12 @@ export default function Conversation() {
           placeholder="Écris ton message..."
           className="flex-1 border rounded px-3 py-2"
         />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Envoyer
+        <button
+          type="submit"
+          disabled={!socketReady || !socket.connected}
+          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          {socketReady && socket.connected ? "Envoyer" : "Connexion..."}
         </button>
       </form>
     </div>

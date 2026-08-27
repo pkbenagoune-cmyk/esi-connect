@@ -15,7 +15,6 @@ export default function Navbar() {
     navigate("/");
   }
 
-  // Écoute des notifications de nouveaux messages, où que l'utilisateur se trouve
   useEffect(() => {
     if (!user) return;
 
@@ -40,6 +39,11 @@ export default function Navbar() {
         <ul className="flex items-center gap-6 text-slate-600 font-medium">
           {user ? (
             <>
+              <li>
+                <Link to="/tutors" className="hover:text-blue-600 transition">
+                  Tuteurs
+                </Link>
+              </li>
               <li>
                 <Link to={dashboardPath} className="hover:text-blue-600 transition">
                   Mon espace
