@@ -156,27 +156,6 @@ donne la même réponse que si l'ID n'existait pas — impossible de différenci
 ### Pourquoi tutor_id est dupliqué dans ratings
 
 La table ratings contient request_id (la demande) et tutor_id (le tuteur
-
-## Décisions de conception
-
-### Pourquoi les messages sont rattachés à une demande
-
-Une conversation n'existe pas indépendamment d'une demande de tutorat. L'URL
-/api/requests/4/messages se lit : "les messages de la demande 4". Cette
-hiérarchie REST reflète la structure métier : pas de message sans contexte
-pédagogique.
-
-### Pourquoi 404 et non 403 à un non-participant
-
-Quand un utilisateur tente d'accéder à une conversation sans y participer,
-le serveur renvoie 404 (Not Found), pas 403 (Forbidden). C'est une
-décision de sécurité : 403 révélerait l'existence de la conversation. 404
-donne la même réponse que si l'ID n'existait pas — impossible de différencier
-"n'existe pas" de "tu n'y as pas accès".
-
-### Pourquoi tutor_id est dupliqué dans ratings
-
-La table ratings contient request_id (la demande) et tutor_id (le tuteur
 noté). Cette duplication dénormalisée évite une jointure systématique avec
 tutoring_requests pour connaître le tuteur noté. Le coût en espace est
 minime ; le gain en lisibilité et performance des requêtes de classement est
