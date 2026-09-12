@@ -1,0 +1,10 @@
+e2f0284 Kinane Benagoune <BenagouneKinane@outlook.fr> fix: correction complète des 5 phases (dependances, auth, coherence, visibilite, lisibilite)
+5b19859 Kinane Benagoune <BenagouneKinane@outlook.fr> docs: update README with full API, Socket.IO events and design decisions
+60ed1c8 Kinane Benagoune <BenagouneKinane@outlook.fr> chore: normalize line endings
+b0a99bf Kinane Benagoune <BenagouneKinane@outlook.fr> fix: ajout des dépendances manquantes (socket.io, bcrypt, jsonwebtoken)
+86de057 Kinane Benagoune <BenagouneKinane@outlook.fr> feat: add rating system for completed requests
+24196d2 Kinane Benagoune <BenagouneKinane@outlook.fr> feat: complete ESI-Connect with real-time messaging, auth, and tutoring flow
+86a085e Kinane Benagoune <BenagouneKinane@outlook.fr> Integrate React frontend with ESI-Connect backend
+193f6d7 Kinane Benagoune <BenagouneKinane@outlook.fr> Fix: pool.query error and routes
+e3e21e2 Kinane Benagoune <BenagouneKinane@outlook.fr> chore: remove node_modules from repository
+32fda16 Kinane Benagoune <BenagouneKinane@outlook.fr> chore: update .gitignore
